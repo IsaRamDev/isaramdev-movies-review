@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
 import Cards from './components/Cards';
+import Inputs from './components/Inputs';
 import getFormattedMoviesData from './services/MovieService';
+import Footer from './components/Footer';
 
 function App() {
   const [info, setInfo] = useState([]);
+  const [query, setQuery] = useState({query: ''});
   const [zoomedCardId, setZoomedCardId] = useState(null);
 
   useEffect(() => {
     const fetchMovie = async() => {
-      const data = await getFormattedMoviesData();
+      const data = await getFormattedMoviesData({...query});
       setInfo(data.info);
       console.log(data);
     };
     fetchMovie();
-  }, []);
+  }, [query]);
   
   const handleCardClick = (id) => {
     if (zoomedCardId === id) {
@@ -28,7 +31,8 @@ function App() {
   }
 
   return (
-    <div className='flex flex-wrap bg-black'>
+    <div className=' justify-center flex flex-wrap bg-black'>
+      <Inputs setQuery={setQuery} />
       {info.map((movie) => (
         <Cards 
           key={movie.id} 
@@ -41,6 +45,7 @@ function App() {
           ranking={movie.vote_average}
         />
       ))}
+      <Footer/>
     </div>
   );
 }
